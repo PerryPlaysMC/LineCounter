@@ -9,7 +9,6 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.concurrent.atomic.AtomicInteger;
 import javax.swing.*;
 import javax.swing.GroupLayout;
 import javax.swing.LayoutStyle;
@@ -35,6 +34,7 @@ public class LineCounter extends JPanel {
     private ThreadLineCounter counter;
     private final String home = System.getProperty("user.home");
     private SimpleDateFormat format = new SimpleDateFormat("[HH:mm:ss]: ");
+    private Color textColor = new Color(210, 210, 210);
 
     public LineCounter() {
         initComponents();
@@ -114,15 +114,17 @@ public class LineCounter extends JPanel {
         lines.setForeground(new Color(86, 175, 149));
         //---- file ----
         fileLabel.setText("File:");
+        fileLabel.setForeground(textColor);
         file.setBorder(new CompoundBorder(new LineBorder(Color.BLACK, 2), new EmptyBorder(5,5,5,5)));
         file.setBackground(new Color(60, 60, 60));
+        file.setForeground(textColor);
 
         //---- browse ----
         browse.setText("Browse");
         browse.setOpaque(true);
         browse.setBorder(new CompoundBorder(new LineBorder(Color.BLACK, 1), new EmptyBorder(5,5,5,5)));
         browse.setBackground(new Color(87, 84, 84));
-        browse.setForeground(new Color(147, 147, 147));
+        browse.setForeground(new Color(180, 180, 180));
         browse.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -139,7 +141,7 @@ public class LineCounter extends JPanel {
         run.setOpaque(true);
         run.setBorder(new CompoundBorder(new LineBorder(Color.BLACK, 1), new EmptyBorder(5,5,5,5)));
         run.setBackground(new Color(87, 84, 84));
-        run.setForeground(new Color(147, 147, 147));
+        run.setForeground(new Color(180, 180, 180));
         run.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -162,12 +164,14 @@ public class LineCounter extends JPanel {
 
         //---- linesLabel ----
         linesLabel.setText("Lines:");
+        linesLabel.setForeground(textColor);
 
         //---- lines ----
         lines.setText("0");
 
         //---- charactersLabel ----
         charactersLabel.setText("Characters:");
+        charactersLabel.setForeground(textColor);
 
         //---- characters ----
         characters.setText("0");
