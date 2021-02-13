@@ -21,7 +21,7 @@ public class ThreadLineCounter extends Thread {
     private Runnable end;
     private File file;
     private boolean startCount;
-    private long lines = 0, chars = 0;
+    private long lines = 0, chars = 0, files = 0;
     private JTextArea console;
     private SimpleDateFormat format = new SimpleDateFormat("[HH:mm:ss]: ");
     private final String home = System.getProperty("user.home");
@@ -36,12 +36,15 @@ public class ThreadLineCounter extends Thread {
         if(startCount) {
             lines = 0;
             chars = 0;
+            files = 0;
             if(file!=null&&file.exists()) {
+                long start = System.currentTimeMillis();
                 if(file.isDirectory()) {
                     console.append(format.format(new Date()) + "Starting scan: " + getFilePath(file) + "\n");
                     for(File f : getFiles(file)) {
                         if(f.getName().endsWith(".yml") || f.getName().endsWith(".java") || f.getName().endsWith(".json")) {
                             try {
+                                files++;
                                 console.append(format.format(new Date()) + "Scanning file: " + getFilePath(f).replace(file.getPath().replace(home, "~"), "") + "\n");
                                 scanFile(f);
                             } catch (FileNotFoundException e) {
@@ -53,6 +56,7 @@ public class ThreadLineCounter extends Thread {
                     console.append(format.format(new Date()) + "Scanning single file: " + getFilePath(file) + "\n");
                     if(file.getName().endsWith(".yml") || file.getName().endsWith(".java") || file.getName().endsWith(".json")) {
                         try {
+                            files++;
                             scanFile(file);
                         } catch (FileNotFoundException e) {
                             e.printStackTrace();
@@ -60,6 +64,8 @@ public class ThreadLineCounter extends Thread {
                     }
                 }
                 end.run();
+                long end = System.currentTimeMillis();
+                console.append(format.format(new Date()) + "Scan complete in " + ((end-start)/1000) + "s\n");
             }
             startCount = false;
         }
@@ -113,9 +119,14 @@ public class ThreadLineCounter extends Thread {
         this.end = end;
     }
 
-    List<File> getFiles(File directory) {
+    public long getFiles() {
+        return files;
+    }
+
+    private List<File> getFiles(File directory) {
         if(directory == null || !directory.isDirectory()) return Collections.singletonList(directory);
         List<File> files = new ArrayList<>();
+        if(directory.listFiles() == null) return new ArrayList<>();
         for(File f : directory.listFiles()) {
             if(f.isDirectory()) files.addAll(getFiles(f));
             else files.add(f);

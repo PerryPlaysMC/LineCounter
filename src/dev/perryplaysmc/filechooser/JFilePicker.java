@@ -76,12 +76,11 @@ public class JFilePicker{
         if (mode == MODE_OPEN) {
             File file = new File(textField.getText().replace("~", home));
             if(file.exists()) {
-                if(file.isDirectory() && file.listFiles() != null && file.listFiles().length > 0)
-                fileChooser.setSelectedFile(file.listFiles()[0]);
+                if(file.isDirectory() && file.listFiles() != null && file.listFiles().length > 0) fileChooser.setSelectedFile(file.listFiles()[0]);
                 else fileChooser.setSelectedFile(file);
             }
             if (fileChooser.showOpenDialog(spr) == JFileChooser.APPROVE_OPTION) {
-                textField.setText(fileChooser.getSelectedFile().getAbsolutePath());
+                textField.setText(fileChooser.getSelectedFile().getAbsolutePath().replace(home, "~"));
             }
         } else if (mode == MODE_SAVE) {
             if (fileChooser.showSaveDialog(spr) == JFileChooser.APPROVE_OPTION) {
