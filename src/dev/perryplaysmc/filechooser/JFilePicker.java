@@ -1,8 +1,6 @@
 package dev.perryplaysmc.filechooser;
 
-import javax.accessibility.AccessibleContext;
 import javax.swing.*;
-import javax.swing.plaf.FileChooserUI;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
@@ -17,6 +15,7 @@ public class JFilePicker{
     public static final int MODE_OPEN = 1;
     public static final int MODE_SAVE = 2;
     private final String home = System.getProperty("user.home");
+    private Color textColor = new Color(210, 210, 210);
 
     public JFilePicker(JPanel spr, JTextField text, JButton button) {
         this.spr = spr;
@@ -55,6 +54,7 @@ public class JFilePicker{
                 JList<?> list = (JList<?>) comp;
                 list.setOpaque(true);
                 list.setBackground(new Color(80,80,80));
+                comp.setForeground(textColor);
                 continue;
             }
             if(comp instanceof JScrollBar) {
@@ -64,6 +64,7 @@ public class JFilePicker{
                 continue;
             }
             comp.setBackground(new Color(80,80,80));
+            comp.setForeground(textColor);
         }
     }
 
