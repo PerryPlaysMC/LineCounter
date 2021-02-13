@@ -1,5 +1,7 @@
 package dev.perryplaysmc.filechooser;
 
+import dev.perryplaysmc.LineCounter;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -46,7 +48,7 @@ public class JFilePicker{
             if(comp instanceof JViewport) {
                 JViewport port = (JViewport) comp;
                 port.setOpaque(true);
-                port.setBackground(new Color(80,80,80));
+                port.setBackground(LineCounter.BACKGROUND_COLOR_PANEL);
                 changeColor(port);
                 continue;
             }
@@ -72,8 +74,12 @@ public class JFilePicker{
 
     private void buttonActionPerformed(ActionEvent evt) {
         if (mode == MODE_OPEN) {
-            File file = new File(textField.getText().replace("~/", home + "/").replace("//", "/"));
-            if(file.exists()) fileChooser.setSelectedFile(file);
+            File file = new File(textField.getText().replace("~", home));
+            if(file.exists()) {
+                if(file.isDirectory() && file.listFiles() != null && file.listFiles().length > 0)
+                fileChooser.setSelectedFile(file.listFiles()[0]);
+                else fileChooser.setSelectedFile(file);
+            }
             if (fileChooser.showOpenDialog(spr) == JFileChooser.APPROVE_OPTION) {
                 textField.setText(fileChooser.getSelectedFile().getAbsolutePath());
             }

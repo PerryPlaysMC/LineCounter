@@ -34,7 +34,9 @@ public class LineCounter extends JPanel {
     private ThreadLineCounter counter;
     private final String home = System.getProperty("user.home");
     private SimpleDateFormat format = new SimpleDateFormat("[HH:mm:ss]: ");
-    private Color textColor = new Color(210, 210, 210);
+    private Color textColor = new Color(210,210,210);
+    public static final Color BACKGROUND_COLOR = new Color(80,80,80);
+    public static final Color BACKGROUND_COLOR_PANEL = new Color(45,45,45);
 
     public LineCounter() {
         initComponents();
@@ -46,14 +48,14 @@ public class LineCounter extends JPanel {
         jfp.addFileTypeFilter(".json", "List all JSON files");
         JFileChooser fileChooser = jfp.getFileChooser();
         fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-        fileChooser.setCurrentDirectory(new File("/Users/vincente/workspace/DynamicPlugins/DynamicChat"));
-        file.setText("~/workspace/DynamicPlugins/DynamicChat");
-        console.setBackground(new Color(80, 80, 80));
+        fileChooser.setCurrentDirectory(new File(home + "/"));
+        file.setText("~/");
+        console.setBackground(BACKGROUND_COLOR);
         console.setForeground(new Color(46, 196, 119));
         scrollConsole.setBorder(new LineBorder(new Color(57, 55, 55),3));
         console.setBorder(new EmptyBorder(5,5,5,5));
         console.setEditable(false);
-        setBackground(new Color(45,45,45));
+        setBackground(BACKGROUND_COLOR_PANEL);
         int threshold = 2000;
         JScrollBar vbar = scrollConsole.getVerticalScrollBar();
         vbar.addAdjustmentListener(new AdjustmentListener() {
