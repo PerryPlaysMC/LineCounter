@@ -18,12 +18,14 @@ public class JFilePicker{
     public static final int MODE_SAVE = 2;
     private final String home = System.getProperty("user.home");
     private Color textColor = new Color(210, 210, 210);
+    private FileViewer viewableFiles = new FileViewer();
 
     public JFilePicker(JPanel spr, JTextField text, JButton button) {
         this.spr = spr;
         fileChooser = new JFileChooser();
         textField = text;
         changeColor(fileChooser);
+        fileChooser.setFileFilter(viewableFiles);
         fileChooser.setOpaque(true);
         fileChooser.setBackground(new Color(45,45,45));
         button.addActionListener(this::buttonActionPerformed);
@@ -89,9 +91,15 @@ public class JFilePicker{
         }
     }
 
+    public FileViewer getFileView() {
+        return viewableFiles;
+    }
+
     public void addFileTypeFilter(String extension, String description) {
         FileTypeFilter filter = new FileTypeFilter(extension, description);
         fileChooser.addChoosableFileFilter(filter);
+        viewableFiles.addAcceptableFile(extension);
+
     }
 
     public void setMode(int mode) {

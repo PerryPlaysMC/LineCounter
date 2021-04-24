@@ -1,4 +1,5 @@
 package dev.perryplaysmc;
+import com.sun.tools.javac.parser.JavacParser;
 import dev.perryplaysmc.filechooser.JFilePicker;
 
 import java.awt.*;
@@ -90,7 +91,7 @@ public class LineCounter extends JPanel {
                     console.append("Couldn't find file: " + file.getAbsolutePath() + "\n");
                     return;
                 }
-                counter = new ThreadLineCounter(console);
+                counter = new ThreadLineCounter(console, jfp.getFileView());
                 counter.onEnd(() -> {
                     lines.setText(counter.getLines()+"");
                     characters.setText(counter.getCharacters()+"");
@@ -161,7 +162,8 @@ public class LineCounter extends JPanel {
 
         setBorder(new CompoundBorder(new TitledBorder(new EmptyBorder(0,0,20, 0),
                 "File Line/Character counter", TitledBorder.CENTER, TitledBorder.ABOVE_BOTTOM
-                , new Font("Dialog", Font .BOLD,24), new Color(30, 57, 83)), getBorder()));
+                , new Font("Dialog",
+                Font .BOLD,24), new Color(30, 57, 83)), getBorder()));
 
         setExtra();
         file.setBorder(new LineBorder(Color.black, 2));

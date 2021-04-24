@@ -1,10 +1,15 @@
 package dev.perryplaysmc;
 
+import dev.perryplaysmc.filechooser.FileViewer;
+
 import javax.swing.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.nio.file.Files;
+import java.text.CharacterIterator;
 import java.text.SimpleDateFormat;
+import java.text.StringCharacterIterator;
 import java.util.*;
 
 /**
@@ -23,12 +28,14 @@ public class ThreadLineCounter extends Thread {
     private boolean startCount;
     private long lines = 0, chars = 0, files = 0;
     private JTextArea console;
+    private FileViewer fileView;
     private SimpleDateFormat format = new SimpleDateFormat("[HH:mm:ss]: ");
     private final String home = System.getProperty("user.home");
 
-    public ThreadLineCounter(JTextArea console) {
+    public ThreadLineCounter(JTextArea console, FileViewer fileView) {
         super("Line-Counter");
         this.console = console;
+        this.fileView = fileView;
     }
 
     @Override
@@ -45,7 +52,8 @@ public class ThreadLineCounter extends Thread {
                         if(f.getName().endsWith(".yml") || f.getName().endsWith(".java") || f.getName().endsWith(".json")) {
                             try {
                                 files++;
-                                console.append(format.format(new Date()) + "Scanning file: " + getFilePath(f).replace(file.getPath().replace(home, "~"), "") + "\n");
+                                console.append(format.format(new Date()) + "Scanning file: " +
+                                        getFilePath(f).replace(file.getPath().replace(home, "~"), "") + " Size: "+ size(f.length())+"\n");
                                 scanFile(f);
                             } catch (FileNotFoundException e) {
                                 e.printStackTrace();
@@ -53,7 +61,7 @@ public class ThreadLineCounter extends Thread {
                         }
                     }
                 } else {
-                    console.append(format.format(new Date()) + "Scanning single file: " + getFilePath(file) + "\n");
+                    console.append(format.format(new Date()) + "Scanning single file: " + getFilePath(file) + " Size: " + size(file.length()) + "\n");
                     if(file.getName().endsWith(".yml") || file.getName().endsWith(".java") || file.getName().endsWith(".json")) {
                         try {
                             files++;
@@ -65,11 +73,25 @@ public class ThreadLineCounter extends Thread {
                 }
                 end.run();
                 long end = System.currentTimeMillis();
+                if(file.isDirectory())
+                console.append(format.format(new Date()) + "Directory size: " + size(file.length()) + "\n");
                 console.append(format.format(new Date()) + "Scan complete in " + ((end-start)/1000) + "s\n");
             }
             startCount = false;
         }
         stop();
+    }
+
+    private String size(long bytes) {
+        if (-1000 < bytes && bytes < 1000) {
+            return bytes + " B";
+        }
+        CharacterIterator ci = new StringCharacterIterator("kMGTPE");
+        while (bytes <= -999_950 || bytes >= 999_950) {
+            bytes /= 1000;
+            ci.next();
+        }
+        return String.format("%.1f %cB", bytes / 1000.0, ci.current());
     }
 
     private void scanFile(File file) throws FileNotFoundException {
@@ -128,8 +150,8 @@ public class ThreadLineCounter extends Thread {
         List<File> files = new ArrayList<>();
         if(directory.listFiles() == null) return new ArrayList<>();
         for(File f : directory.listFiles()) {
-            if(f.isDirectory()) files.addAll(getFiles(f));
-            else files.add(f);
+            if(f.isDirectory() && fileView.hasExtension(directory)) files.addAll(getFiles(f));
+            if(f.getName().endsWith(".yml") || f.getName().endsWith(".java") || f.getName().endsWith(".json")) files.add(f);
         }
         return files;
     }
